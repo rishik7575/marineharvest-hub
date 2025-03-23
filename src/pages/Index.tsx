@@ -1,12 +1,513 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+
+// Data - Products
+const products = [
+  {
+    id: "salmon-premium",
+    name: "Premium Atlantic Salmon",
+    price: 24.99,
+    image: "https://images.unsplash.com/photo-1583833008338-31a6657917ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    category: "Fish",
+    description: "Premium quality Atlantic salmon, sustainably farmed with no antibiotics or hormones."
+  },
+  {
+    id: "seabass-fresh",
+    name: "Fresh Sea Bass",
+    price: 18.99,
+    image: "https://images.unsplash.com/photo-1559589332-a2c156ada4c1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    category: "Fish",
+    description: "Wild-caught sea bass known for its delicate flavor and firm texture."
+  },
+  {
+    id: "oysters-dozen",
+    name: "Fresh Oysters",
+    price: 34.99,
+    image: "https://images.unsplash.com/photo-1569513600253-e490a7e67e79?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    category: "Shellfish",
+    description: "Premium fresh oysters harvested from pristine waters. Dozen pack."
+  },
+  {
+    id: "lobster-live",
+    name: "Live Lobster",
+    price: 45.99,
+    image: "https://images.unsplash.com/photo-1559574449-c474edf8f521?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    category: "Shellfish",
+    description: "Fresh live lobster, perfect for special occasions and gourmet dining."
+  },
+  {
+    id: "shrimp-jumbo",
+    name: "Jumbo Shrimp",
+    price: 21.99,
+    image: "https://images.unsplash.com/photo-1565680018093-ebb6b9ab5460?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    category: "Shellfish",
+    description: "Large, succulent shrimp perfect for grilling, sautéing, or adding to pasta dishes."
+  },
+  {
+    id: "seaweed-nori",
+    name: "Dried Nori Seaweed",
+    price: 8.99,
+    image: "https://images.unsplash.com/photo-1584314620467-8d36986b2daa?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    category: "Seaweed",
+    description: "Premium dried nori seaweed, perfect for sushi making and as a nutritious snack."
+  }
+];
 
 const Index = () => {
+  // State
+  const [cart, setCart] = useState<Array<{product: any, quantity: number}>>([]);
+  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
+  const [toastVisible, setToastVisible] = useState(false);
+  const [toastType, setToastType] = useState("success");
+
+  // Filter products by category
+  const filteredProducts = selectedCategory === "All" 
+    ? products 
+    : products.filter(product => product.category === selectedCategory);
+
+  // Calculate cart totals
+  const itemCount = cart.reduce((total, item) => total + item.quantity, 0);
+  const cartTotal = cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
+
+  // Cart functions
+  const addToCart = (productId: string) => {
+    const product = products.find(p => p.id === productId);
+    if (!product) return;
+    
+    setCart(prevCart => {
+      const existingItem = prevCart.find(item => item.product.id === productId);
+      
+      if (existingItem) {
+        // Increase quantity if already in cart
+        return prevCart.map(item => 
+          item.product.id === productId 
+            ? { ...item, quantity: item.quantity + 1 } 
+            : item
+        );
+      } else {
+        // Add new item to cart
+        return [...prevCart, { product, quantity: 1 }];
+      }
+    });
+    
+    showToast(`Added ${product.name} to cart`);
+  };
+
+  const removeFromCart = (productId: string) => {
+    setCart(prevCart => prevCart.filter(item => item.product.id !== productId));
+  };
+
+  const increaseQuantity = (productId: string) => {
+    setCart(prevCart => 
+      prevCart.map(item => 
+        item.product.id === productId 
+          ? { ...item, quantity: item.quantity + 1 } 
+          : item
+      )
+    );
+  };
+
+  const decreaseQuantity = (productId: string) => {
+    setCart(prevCart => {
+      const item = prevCart.find(item => item.product.id === productId);
+      
+      if (item && item.quantity > 1) {
+        return prevCart.map(item => 
+          item.product.id === productId 
+            ? { ...item, quantity: item.quantity - 1 } 
+            : item
+        );
+      } else {
+        return prevCart.filter(item => item.product.id !== productId);
+      }
+    });
+  };
+
+  const clearCart = () => {
+    setCart([]);
+  };
+
+  const handleCheckout = () => {
+    if (cart.length === 0) {
+      showToast("Your cart is empty!", "error");
+      return;
+    }
+    
+    showToast("Checkout completed! Thank you for your purchase.", "success");
+    clearCart();
+    setIsCartOpen(false);
+  };
+
+  // Toast notification
+  const showToast = (message: string, type = "success") => {
+    setToastMessage(message);
+    setToastType(type);
+    setToastVisible(true);
+    
+    setTimeout(() => {
+      setToastVisible(false);
+    }, 3000);
+  };
+
+  // Handle clicks outside mobile nav to close it
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (mobileNavOpen && !(e.target as Element).closest("#mobileNav") && !(e.target as Element).closest("#menuBtn")) {
+        setMobileNavOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [mobileNavOpen]);
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-gray-600">Start building your amazing project here!</p>
-      </div>
+    <div className="min-h-screen bg-white">
+      {/* Header */}
+      <header className="fixed top-0 left-0 w-full z-40 transition-all duration-300 bg-white/90 backdrop-blur-md shadow-sm">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between py-4">
+            <a href="#" className="text-xl font-semibold text-gray-900">MarineHarvest</a>
+            
+            <nav className="hidden md:block">
+              <ul className="flex space-x-8">
+                <li><a href="#" className="relative font-medium text-gray-500 hover:text-gray-900 transition-colors duration-300">Home</a></li>
+                <li><a href="#" className="relative font-medium text-gray-500 hover:text-gray-900 transition-colors duration-300">Sustainable Farming</a></li>
+                <li><a href="#" className="relative font-medium text-gray-900 hover:text-gray-900 transition-colors duration-300 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-gray-900">Marine Products</a></li>
+                <li><a href="#" className="relative font-medium text-gray-500 hover:text-gray-900 transition-colors duration-300">Equipment</a></li>
+              </ul>
+            </nav>
+            
+            <div className="flex items-center">
+              <button 
+                className="relative p-2 mr-2 text-gray-600 hover:text-gray-900 transition-colors"
+                onClick={() => setIsCartOpen(true)}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/>
+                  <path d="M3 6h18"/>
+                  <path d="M16 10a4 4 0 0 1-8 0"/>
+                </svg>
+                {itemCount > 0 && (
+                  <span className="absolute -top-1 -right-1 flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-black rounded-full">
+                    {itemCount}
+                  </span>
+                )}
+              </button>
+              
+              <button 
+                className="md:hidden p-2 text-gray-600 hover:text-gray-900 transition-colors"
+                onClick={() => setMobileNavOpen(!mobileNavOpen)}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="4" x2="20" y1="12" y2="12"/>
+                  <line x1="4" x2="20" y1="6" y2="6"/>
+                  <line x1="4" x2="20" y1="18" y2="18"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        {/* Mobile Navigation */}
+        <AnimatePresence>
+          {mobileNavOpen && (
+            <motion.div 
+              id="mobileNav"
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.2 }}
+              className="md:hidden absolute w-full bg-white shadow-lg z-50"
+            >
+              <ul className="p-4 space-y-4">
+                <li><a href="#" className="block py-2 font-medium text-gray-500">Home</a></li>
+                <li><a href="#" className="block py-2 font-medium text-gray-500">Sustainable Farming</a></li>
+                <li><a href="#" className="block py-2 font-medium text-gray-900">Marine Products</a></li>
+                <li><a href="#" className="block py-2 font-medium text-gray-500">Equipment</a></li>
+              </ul>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </header>
+      
+      {/* Hero Section */}
+      <section className="relative h-[50vh] min-h-[400px] flex items-center mt-16">
+        <div className="absolute inset-0 z-0">
+          <img 
+            src="https://images.unsplash.com/photo-1518877593221-1f28583780b4?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80" 
+            alt="Marine farm with ocean view" 
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-black/40"></div>
+        </div>
+        
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="max-w-2xl text-white"
+          >
+            <h1 className="text-4xl md:text-5xl font-bold mb-4">Fresh Marine Products</h1>
+            <p className="text-lg md:text-xl opacity-90">
+              Explore our selection of premium seafood, including sustainably farmed fish, shellfish, and sea vegetables.
+            </p>
+          </motion.div>
+        </div>
+      </section>
+      
+      {/* Filter Section */}
+      <section className="py-8 border-b border-gray-100">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-wrap gap-3">
+            {["All", "Fish", "Shellfish", "Seaweed"].map((category) => (
+              <button
+                key={category}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
+                  selectedCategory === category 
+                    ? "bg-gray-900 text-white" 
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                }`}
+                onClick={() => setSelectedCategory(category)}
+              >
+                {category}
+              </button>
+            ))}
+          </div>
+        </div>
+      </section>
+      
+      {/* Products Section */}
+      <section className="py-12 sm:py-16">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-2xl font-medium mb-8">{selectedCategory} Marine Products</h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {filteredProducts.map((product) => (
+              <motion.div
+                key={product.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+                className="group relative overflow-hidden rounded-xl bg-white shadow-sm hover:shadow-md transition-all duration-300"
+              >
+                <div className="relative h-0 pb-[75%] overflow-hidden rounded-t-xl">
+                  <img 
+                    src={product.image} 
+                    alt={product.name}
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    loading="lazy"
+                  />
+                  <button 
+                    className="absolute right-4 bottom-4 z-10 p-2 bg-white rounded-full shadow-md opacity-0 transform scale-90 transition-all duration-300 group-hover:opacity-100 group-hover:scale-100"
+                    onClick={() => addToCart(product.id)}
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M5 12h14"/>
+                      <path d="M12 5v14"/>
+                    </svg>
+                  </button>
+                </div>
+                
+                <div className="p-4">
+                  <div className="flex justify-between items-start mb-1">
+                    <h3 className="text-lg font-medium text-gray-900 truncate">{product.name}</h3>
+                    <span className="text-lg font-semibold">${product.price.toFixed(2)}</span>
+                  </div>
+                  
+                  <p className="text-gray-600 text-sm line-clamp-2 mb-4">{product.description}</p>
+                  
+                  <button 
+                    className="w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-gray-900 text-white rounded-lg transition-all duration-300 hover:bg-gray-800 active:scale-98"
+                    onClick={() => addToCart(product.id)}
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/>
+                      <path d="M3 6h18"/>
+                      <path d="M16 10a4 4 0 0 1-8 0"/>
+                    </svg>
+                    <span className="font-medium">Add to Cart</span>
+                  </button>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+      
+      {/* Cart Panel */}
+      <AnimatePresence>
+        {isCartOpen && (
+          <>
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40"
+              onClick={() => setIsCartOpen(false)}
+            />
+            
+            <motion.div 
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              className="fixed top-0 right-0 h-full w-full max-w-md bg-white shadow-xl z-50 flex flex-col"
+            >
+              <div className="flex items-center justify-between p-4 border-b border-gray-100">
+                <div className="flex items-center gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/>
+                    <path d="M3 6h18"/>
+                    <path d="M16 10a4 4 0 0 1-8 0"/>
+                  </svg>
+                  <h2 className="text-lg font-medium">Your Cart</h2>
+                  <span className="text-sm text-gray-500">({itemCount} items)</span>
+                </div>
+                <button 
+                  className="p-2 text-gray-500 hover:text-gray-900 transition-colors"
+                  onClick={() => setIsCartOpen(false)}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M18 6 6 18"/>
+                    <path d="m6 6 12 12"/>
+                  </svg>
+                </button>
+              </div>
+              
+              <div className="flex-1 overflow-y-auto p-4">
+                {cart.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center h-full text-center p-8">
+                    <svg className="text-gray-300 mb-4" xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/>
+                      <path d="M3 6h18"/>
+                      <path d="M16 10a4 4 0 0 1-8 0"/>
+                    </svg>
+                    <h3 className="text-xl font-medium mb-2">Your cart is empty</h3>
+                    <p className="text-gray-500 mb-6">Add some products to your cart and they will appear here</p>
+                    <button 
+                      className="px-6 py-2.5 bg-gray-900 text-white rounded-lg transition-all duration-300 hover:bg-gray-800"
+                      onClick={() => setIsCartOpen(false)}
+                    >
+                      Continue Shopping
+                    </button>
+                  </div>
+                ) : (
+                  <ul className="space-y-4">
+                    {cart.map((item) => (
+                      <li key={item.product.id} className="flex py-4 border-b border-gray-100">
+                        <div className="h-20 w-20 flex-shrink-0 overflow-hidden rounded-md bg-gray-100">
+                          <img
+                            src={item.product.image}
+                            alt={item.product.name}
+                            className="h-full w-full object-cover"
+                          />
+                        </div>
+                        
+                        <div className="ml-4 flex flex-1 flex-col">
+                          <div className="flex justify-between text-base">
+                            <h3 className="font-medium">{item.product.name}</h3>
+                            <button
+                              className="text-gray-400 hover:text-red-500 transition-colors"
+                              onClick={() => removeFromCart(item.product.id)}
+                            >
+                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M18 6 6 18"/>
+                                <path d="m6 6 12 12"/>
+                              </svg>
+                            </button>
+                          </div>
+                          <p className="mt-1 text-sm text-gray-500">${item.product.price.toFixed(2)}</p>
+                          
+                          <div className="flex items-center justify-between mt-2">
+                            <div className="flex items-center border border-gray-200 rounded-md">
+                              <button
+                                className="w-8 h-8 flex items-center justify-center text-gray-600 hover:bg-gray-100"
+                                onClick={() => decreaseQuantity(item.product.id)}
+                              >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                  <path d="M5 12h14"/>
+                                </svg>
+                              </button>
+                              <span className="w-10 text-center font-medium text-sm">{item.quantity}</span>
+                              <button
+                                className="w-8 h-8 flex items-center justify-center text-gray-600 hover:bg-gray-100"
+                                onClick={() => increaseQuantity(item.product.id)}
+                              >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                  <path d="M5 12h14"/>
+                                  <path d="M12 5v14"/>
+                                </svg>
+                              </button>
+                            </div>
+                            <p className="font-medium">
+                              ${(item.product.price * item.quantity).toFixed(2)}
+                            </p>
+                          </div>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+              
+              {cart.length > 0 && (
+                <div className="border-t border-gray-200 p-4 space-y-4">
+                  <button 
+                    className="w-full flex items-center justify-center gap-2 py-2 text-gray-600 hover:text-red-500 transition-colors"
+                    onClick={clearCart}
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M3 6h18"/>
+                      <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
+                      <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+                      <line x1="10" x2="10" y1="11" y2="17"/>
+                      <line x1="14" x2="14" y1="11" y2="17"/>
+                    </svg>
+                    <span>Clear Cart</span>
+                  </button>
+                  
+                  <div className="flex justify-between text-lg font-semibold">
+                    <span>Total:</span>
+                    <span>${cartTotal.toFixed(2)}</span>
+                  </div>
+                  
+                  <button 
+                    className="w-full py-3 bg-gray-900 text-white rounded-lg font-medium transition-all duration-300 hover:bg-gray-800 active:scale-98"
+                    onClick={handleCheckout}
+                  >
+                    Checkout
+                  </button>
+                </div>
+              )}
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+      
+      {/* Toast Notification */}
+      <AnimatePresence>
+        {toastVisible && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            className={`fixed bottom-4 right-4 px-4 py-3 rounded-lg text-white z-50 ${
+              toastType === "success" ? "bg-emerald-500" : "bg-red-500"
+            }`}
+          >
+            {toastMessage}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
