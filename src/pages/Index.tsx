@@ -231,9 +231,9 @@ const Index = () => {
             <nav className="hidden md:block">
               <ul className="flex space-x-8">
                 <li><Link to="/" className="relative font-medium text-gray-500 hover:text-gray-900 transition-colors duration-300">Home</Link></li>
-                <li><Link to="/" className="relative font-medium text-gray-500 hover:text-gray-900 transition-colors duration-300">Sustainable Farming</Link></li>
+                <li><Link to="/sustainable-farming" className="relative font-medium text-gray-500 hover:text-gray-900 transition-colors duration-300">Sustainable Farming</Link></li>
                 <li><Link to="/" className="relative font-medium text-gray-900 hover:text-gray-900 transition-colors duration-300 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-gray-900">Marine Products</Link></li>
-                <li><Link to="/" className="relative font-medium text-gray-500 hover:text-gray-900 transition-colors duration-300">Equipment</Link></li>
+                <li><Link to="/equipment" className="relative font-medium text-gray-500 hover:text-gray-900 transition-colors duration-300">Equipment</Link></li>
               </ul>
             </nav>
             
@@ -284,9 +284,9 @@ const Index = () => {
             >
               <ul className="p-4 space-y-4">
                 <li><Link to="/" className="block py-2 font-medium text-gray-500">Home</Link></li>
-                <li><Link to="/" className="block py-2 font-medium text-gray-500">Sustainable Farming</Link></li>
+                <li><Link to="/sustainable-farming" className="block py-2 font-medium text-gray-500">Sustainable Farming</Link></li>
                 <li><Link to="/" className="block py-2 font-medium text-gray-900">Marine Products</Link></li>
-                <li><Link to="/" className="block py-2 font-medium text-gray-500">Equipment</Link></li>
+                <li><Link to="/equipment" className="block py-2 font-medium text-gray-500">Equipment</Link></li>
               </ul>
             </motion.div>
           )}
