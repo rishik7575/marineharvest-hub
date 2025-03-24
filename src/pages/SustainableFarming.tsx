@@ -30,6 +30,48 @@ const SustainableFarming = () => {
         </div>
       </header>
 
+      {/* Mobile Navigation */}
+      <div className="md:hidden">
+        <div className="fixed bottom-0 left-0 w-full bg-white border-t border-gray-100 z-40">
+          <div className="grid grid-cols-4 gap-1">
+            <Link to="/" className="flex flex-col items-center py-2 text-gray-500 hover:text-gray-900">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+              </svg>
+              <span className="text-xs mt-1">Home</span>
+            </Link>
+            <Link to="/sustainable-farming" className="flex flex-col items-center py-2 text-gray-900 hover:text-gray-900">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 2a10 10 0 1 0 10 10 4 4 0 0 1-5-5 4 4 0 0 1-5-5"></path>
+                <path d="M8.5 8.5v.01"></path>
+                <path d="M16 15.5v.01"></path>
+                <path d="M12 12v.01"></path>
+                <path d="M11 17v.01"></path>
+                <path d="M7 14v.01"></path>
+              </svg>
+              <span className="text-xs mt-1">Farming</span>
+            </Link>
+            <Link to="/" className="flex flex-col items-center py-2 text-gray-500 hover:text-gray-900">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M22 12H2"></path>
+                <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"></path>
+                <path d="M5 12V7a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v5"></path>
+              </svg>
+              <span className="text-xs mt-1">Products</span>
+            </Link>
+            <Link to="/equipment" className="flex flex-col items-center py-2 text-gray-500 hover:text-gray-900">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="2" x2="22" y1="12" y2="12"></line>
+                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+              </svg>
+              <span className="text-xs mt-1">Equipment</span>
+            </Link>
+          </div>
+        </div>
+      </div>
+
       {/* Main Content */}
       <main className="container mx-auto px-4 pt-24 pb-12">
         <section className="max-w-4xl mx-auto">
@@ -97,6 +139,34 @@ const SustainableFarming = () => {
       {/* Footer */}
       <footer className="bg-gray-900 text-white py-8">
         <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+            <div>
+              <h3 className="text-lg font-semibold mb-4">MarineHarvest</h3>
+              <p className="text-gray-400">
+                Providing the freshest seafood directly from our sustainable marine farms to your table.
+              </p>
+            </div>
+            
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
+              <ul className="space-y-2">
+                <li><Link to="/" className="text-gray-400 hover:text-white transition-colors">Home</Link></li>
+                <li><Link to="/sustainable-farming" className="text-gray-400 hover:text-white transition-colors">Sustainable Farming</Link></li>
+                <li><Link to="/" className="text-gray-400 hover:text-white transition-colors">Marine Products</Link></li>
+                <li><Link to="/equipment" className="text-gray-400 hover:text-white transition-colors">Equipment</Link></li>
+              </ul>
+            </div>
+            
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Contact</h3>
+              <address className="not-italic text-gray-400">
+                <p>123 Ocean Drive, Seaview, CA 90210</p>
+                <p>Email: <a href="mailto:info@marineharvest.com" className="hover:text-white">info@marineharvest.com</a></p>
+                <p>Phone: <a href="tel:+1234567890" className="hover:text-white">+1 (234) 567-890</a></p>
+              </address>
+            </div>
+          </div>
+          
           <div className="text-center">
             <p className="text-gray-400">&copy; {new Date().getFullYear()} MarineHarvest. All rights reserved.</p>
           </div>
