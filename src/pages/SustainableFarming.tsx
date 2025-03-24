@@ -1,4 +1,5 @@
 
+import { Leaf, RefreshCw, Shield } from "lucide-react";
 import PageLayout from "../components/PageLayout";
 import ProductList from "../components/ProductList";
 import { sustainableProducts } from "../data/products";
@@ -33,9 +34,7 @@ const SustainableFarming = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
             <div className="bg-white p-6 rounded-lg shadow-sm">
               <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-blue-600">
-                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                </svg>
+                <Shield className="text-blue-600" />
               </div>
               <h3 className="text-xl font-semibold mb-2">Ethical Practices</h3>
               <p className="text-gray-600">
@@ -45,9 +44,7 @@ const SustainableFarming = () => {
             
             <div className="bg-white p-6 rounded-lg shadow-sm">
               <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-green-600">
-                  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
-                </svg>
+                <Leaf className="text-green-600" />
               </div>
               <h3 className="text-xl font-semibold mb-2">Eco-Friendly Technology</h3>
               <p className="text-gray-600">
@@ -57,15 +54,55 @@ const SustainableFarming = () => {
             
             <div className="bg-white p-6 rounded-lg shadow-sm">
               <div className="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-amber-600">
-                  <circle cx="12" cy="12" r="10"/>
-                  <path d="M12 6v6l4 2"/>
-                </svg>
+                <RefreshCw className="text-amber-600" />
               </div>
               <h3 className="text-xl font-semibold mb-2">Sustainable Resources</h3>
               <p className="text-gray-600">
                 Our commitment to sustainability extends to using renewable resources and responsible waste management.
               </p>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            <div>
+              <h2 className="text-3xl font-bold mb-6">Why Choose Sustainable Products?</h2>
+              <div className="space-y-4">
+                <div className="flex items-start">
+                  <div className="flex-shrink-0 h-6 w-6 rounded-full bg-green-100 flex items-center justify-center mr-3 mt-1">
+                    <span className="text-green-600 text-sm font-bold">✓</span>
+                  </div>
+                  <p className="text-gray-700">Reduced environmental impact with responsible farming practices</p>
+                </div>
+                <div className="flex items-start">
+                  <div className="flex-shrink-0 h-6 w-6 rounded-full bg-green-100 flex items-center justify-center mr-3 mt-1">
+                    <span className="text-green-600 text-sm font-bold">✓</span>
+                  </div>
+                  <p className="text-gray-700">Higher quality products with better taste and nutritional value</p>
+                </div>
+                <div className="flex items-start">
+                  <div className="flex-shrink-0 h-6 w-6 rounded-full bg-green-100 flex items-center justify-center mr-3 mt-1">
+                    <span className="text-green-600 text-sm font-bold">✓</span>
+                  </div>
+                  <p className="text-gray-700">Support for local communities and fair economic practices</p>
+                </div>
+                <div className="flex items-start">
+                  <div className="flex-shrink-0 h-6 w-6 rounded-full bg-green-100 flex items-center justify-center mr-3 mt-1">
+                    <span className="text-green-600 text-sm font-bold">✓</span>
+                  </div>
+                  <p className="text-gray-700">Long-term viability of marine ecosystems and biodiversity</p>
+                </div>
+              </div>
+            </div>
+            <div className="relative h-0 pb-[75%] overflow-hidden rounded-xl">
+              <img 
+                src="https://images.unsplash.com/photo-1518173946687-a4c8892bbd9f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" 
+                alt="Sustainable fishing practices" 
+                className="absolute inset-0 w-full h-full object-cover"
+              />
             </div>
           </div>
         </div>
