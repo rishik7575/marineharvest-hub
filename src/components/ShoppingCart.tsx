@@ -30,35 +30,35 @@ const ShoppingCartComponent = ({
 
   // Cart functions
   const removeFromCart = (productId: string) => {
-    setCart(prevCart => prevCart.filter(item => item.product.id !== productId));
+    const newCart = cart.filter(item => item.product.id !== productId);
+    setCart(newCart);
     showToast("Item removed from cart", "info");
   };
 
   const increaseQuantity = (productId: string) => {
-    setCart(prevCart => 
-      prevCart.map(item => 
-        item.product.id === productId 
-          ? { ...item, quantity: item.quantity + 1 } 
-          : item
-      )
+    const newCart = cart.map(item => 
+      item.product.id === productId 
+        ? { ...item, quantity: item.quantity + 1 } 
+        : item
     );
+    setCart(newCart);
   };
 
   const decreaseQuantity = (productId: string) => {
-    setCart(prevCart => {
-      const item = prevCart.find(item => item.product.id === productId);
-      
-      if (item && item.quantity > 1) {
-        return prevCart.map(item => 
-          item.product.id === productId 
-            ? { ...item, quantity: item.quantity - 1 } 
-            : item
-        );
-      } else {
-        showToast("Item removed from cart", "info");
-        return prevCart.filter(item => item.product.id !== productId);
-      }
-    });
+    const item = cart.find(item => item.product.id === productId);
+    
+    if (item && item.quantity > 1) {
+      const newCart = cart.map(item => 
+        item.product.id === productId 
+          ? { ...item, quantity: item.quantity - 1 } 
+          : item
+      );
+      setCart(newCart);
+    } else {
+      showToast("Item removed from cart", "info");
+      const newCart = cart.filter(item => item.product.id !== productId);
+      setCart(newCart);
+    }
   };
 
   const clearCart = () => {
